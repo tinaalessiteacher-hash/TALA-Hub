@@ -1,0 +1,177 @@
+import { useRef, useState } from "react";
+import type { FormEvent } from "react";
+import { demoEnabled, demoToolsEnabled } from "../services/authService";
+import { validateAuth } from "../services/formValidation";
+import type {
+  AuthField,
+  AuthValues,
+  FormErrors,
+} from "../services/formValidation";
+import { Icon } from "./Icon";
+
+interface Props {
+  initialEmail?: string;
+  onSubmit: (values: AuthValues, simulateError: boolean) => Promise<void>;
+}
+export function AuthForm({ initialEmail = "", onSubmit }: Props) {
+  const [values, setValues] = useState<AuthValues>({
+    email: initialEmail,
+    password: "",
+  });
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [serviceError, setServiceError] = useState("");
+  const [pending, setPending] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [simulateError, setSimulateError] = useState(false);
+  const form = useRef<HTMLFormElement>(null);
+  const errorBox = useRef<HTMLDivElement>(null);
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (pending) return;
+    const nextErrors = validateAuth(values);
+    setErrors(nextErrors);
+    setServiceError("");
+    const first = Object.keys(nextErrors)[0];
+    if (first) {
+      form.current
+        ?.querySelector<HTMLInputElement>(`[name="${first}"]`)
+        ?.focus();
+      return;
+    }
+    setPending(true);
+    try {
+      await onSubmit(values, simulateError);
+    } catch (error) {
+      setServiceError(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again.",
+      );
+      requestAnimationFrame(() => errorBox.current?.focus());
+    } finally {
+      setPending(false);
+    }
+  }
+  const fields: {
+    name: AuthField;
+    label: string;
+    type: string;
+    autoComplete: string;
+  }[] = [
+    {
+      name: "email",
+      label: "Email address",
+      type: "email",
+      autoComplete: "email",
+    },
+    {
+      name: "password",
+      label: "Demo password",
+      type: showPassword ? "text" : "password",
+      autoComplete: "current-password",
+    },
+  ];
+  return (
+    <form ref={form} onSubmit={submit} noValidate aria-busy={pending}>
+      {!demoEnabled && (
+        <div className="notice error" role="status">
+          Live accounts are not connected. Demo mode is disabled.
+        </div>
+      )}
+      {serviceError && (
+        <div ref={errorBox} tabIndex={-1} className="notice error" role="alert">
+          {serviceError}
+        </div>
+      )}
+      <p className="small">All fields are required.</p>
+      {fields.map((field) => (
+        <div className="form-field" key={field.name}>
+          <label htmlFor={field.name}>{field.label}</label>
+          <input
+            id={field.name}
+            name={field.name}
+            type={field.type}
+            autoComplete={field.autoComplete}
+            required
+            maxLength={field.name === "email" ? 254 : 128}
+            spellCheck={field.name === "email" ? false : undefined}
+            value={values[field.name]}
+            readOnly={pending}
+            aria-invalid={!!errors[field.name]}
+            aria-describedby={
+              [
+                errors[field.name] ? `${field.name}-error` : "",
+                field.name === "password" ? "password-hint" : "",
+              ]
+                .filter(Boolean)
+                .join(" ") || undefined
+            }
+            onChange={(event) => {
+              const next = { ...values, [field.name]: event.target.value };
+              setValues(next);
+              // Validate on submit, then update existing errors while correcting.
+              // Avoid moving the submit button during a pointer-triggered blur.
+              const checked = validateAuth(next);
+              setErrors((current) =>
+                Object.fromEntries(
+                  Object.keys(current).map((name) => [
+                    name,
+                    checked[name as AuthField],
+                  ]),
+                ),
+              );
+            }}
+          />
+          {field.name === "password" && (
+            <small id="password-hint">
+              At least 8 characters. Use a made-up password, never a real one.
+            </small>
+          )}
+          {errors[field.name] && (
+            <p id={`${field.name}-error`} className="field-error">
+              {errors[field.name]}
+            </p>
+          )}
+        </div>
+      ))}
+      <label className="checkbox-row">
+        <input
+          type="checkbox"
+          checked={showPassword}
+          onChange={(e) => setShowPassword(e.target.checked)}
+        />{" "}
+        Show password
+      </label>
+      <button
+        className="button button-full"
+        disabled={pending || !demoEnabled}
+        type="submit"
+      >
+        {pending ? "Opening your demo hub…" : "Log in to demo"}
+        <Icon name="arrow" />
+      </button>
+      <div className="sr-only" role="status">
+        {pending
+          ? "Please wait…"
+          : Object.values(errors).some(Boolean)
+            ? "Please correct the marked fields."
+            : ""}
+      </div>
+      {demoToolsEnabled && (
+        <details className="demo-tools">
+          <summary>Demo testing options</summary>
+          <label className="checkbox-row">
+            <input
+              type="checkbox"
+              checked={simulateError}
+              disabled={pending}
+              onChange={(e) => setSimulateError(e.target.checked)}
+            />{" "}
+            Simulate service error
+          </label>
+          <p>No request will be sent. Uncheck to try the successful flow.</p>
+        </details>
+      )}
+    </form>
+  );
+}

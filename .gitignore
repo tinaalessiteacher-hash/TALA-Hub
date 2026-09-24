@@ -1,0 +1,38 @@
+# Installed dependencies
+node_modules/
+
+# Build output and tool caches
+/dist/
+/build/
+/out/
+/.next/
+/.vite/
+/coverage/
+*.tsbuildinfo
+
+# Local environment files; examples must contain placeholders only
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Test output
+/playwright-report/
+/test-results/
+/blob-report/
+
+# Local logs
+*.log
+
+# OS and editor temporary files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
