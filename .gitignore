@@ -1,6 +1,10 @@
 # Installed dependencies
 node_modules/
 
+# Personal local notes: keep on disk, never commit
+/会议演示.md
+/汇报给老板.md
+
 # Build output and tool caches
 /dist/
 /build/

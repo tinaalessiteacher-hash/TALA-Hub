@@ -123,7 +123,7 @@ Build、Lint、Typecheck 通过；Playwright 10 个场景 × 4 个浏览器配�
 
 正常构建的入口 JS 约 291.2kB / gzip 93.0kB；Dashboard 另约 7.8kB / gzip 2.4kB，CSS 24.85kB / gzip 5.80kB。相较原版约 301kB 的单一 JS 入口，优化主要是延迟下载 Dashboard；并非显著减少 React/Router 本身的成本。浏览器请求检查确认公共页面不下载 Dashboard chunk，打开 hub 后才下载。本地 SVG 约 4kB，无外部字体；没有新增依赖。未进行真实生产环境 Core Web Vitals 采样。
 
-清理已移除被删除装饰区的 CSS，以及 17 处无用或冗余的规则/声明。检查未发现应用 console.log、debugger、TODO/FIXME、疑似密钥字面量、空目录或误跟踪产物。README、PROJECT_STRUCTURE.md 与当前代码对应；src 仍是 assets、components、pages、services、styles 五个目录、26 个源码文件。没有新增空架构层，也未删除用途不明的文件。
+清理已移除被删除装饰区的 CSS，以及 17 处无用或冗余的规则/声明。检查未发现应用 console.log、debugger、TODO/FIXME、疑似密钥字面量、空目录或误跟踪产物。README、项目结构说明（现位于 `docs/PROJECT_STRUCTURE.md`）与当时的代码对应；src 仍是 assets、components、pages、services、styles 五个目录、26 个源码文件。没有新增空架构层，也未删除用途不明的文件。
 
 `git diff --check` 对本轮 working tree 通过。额外检查 staged 内容时，上游 Skills 的 Markdown 原文存在行尾空格（包括硬换行及示例中的空白）；为保持固定版本原文而保留，不属于本轮应用错误。测试 CLI 的 NO_COLOR / FORCE_COLOR 提示来自终端颜色设置，浏览器端没有对应警告。
 

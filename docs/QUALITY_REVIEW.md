@@ -51,3 +51,13 @@ axe 使用 WCAG 2 A/AA 和 2.1 AA 规则扫描 Home、About、Programs、Login�
 设计围绕学习笔记、自然观察和不同学习路径展开：墨绿 `#173f38`、纸白 `#fbfcf9`、浅绿 `#e6eee5`、浅蓝 `#e0edf2`、暖黄 `#f5e4aa` 与柔粉 `#f3e4dd`。主体使用本机无衬线字体，插图文字采用衬线；不依赖外部字体或图片请求。桌面采用文字/学习日记左右布局，手机改为连续阅读；没有营销数字、评价或合作方标志。
 
 品牌标志和插图是设计草案，等待 Sponsor 确认。正式文案、dashboard 最终字段/布局、真实后端/账户开通与生产托管仍待确认，见 [INTEGRATION.md](INTEGRATION.md)。当前页面以英文呈现。课程进度只读，文件上传、真实课程内容和 profile 编辑未实现，也没有用空按钮暗示这些功能已经存在。
+
+## Repository cleanup verification — 2026-09-24
+
+Documentation and Git tracking only; application source, tests and root tool configurations are unchanged. The project structure guide now lives in `docs/PROJECT_STRUCTURE.md`, and the root README is a concise English entry point. Local personal notes are excluded from Git. Existing integration documents, Skills and historical QA records remain useful and were retained.
+
+- Build, Lint and Typecheck: PASS.
+- Playwright: **60/60 PASS**, no failures, skipped tests or retries; Chromium at 320/390/1440 px and WebKit/iPad at 768 px.
+- Registration, login, community roles, dashboard, class selection and calendar regression tests pass.
+- Shared documentation links resolve. No generated artifacts are tracked; existing Git ignore and Explorer exclusions remain in effect.
+- The normal demo build was regenerated after testing with QA controls disabled. No application functionality or production configuration changed.

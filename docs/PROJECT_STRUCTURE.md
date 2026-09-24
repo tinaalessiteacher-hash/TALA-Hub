@@ -10,6 +10,7 @@ TALA-Hub/
 ├── .vscode/settings.json    → 只隐藏 Explorer 中的依赖与生成产物
 ├── docs/
 │   ├── skills/             → 技能来源、安装记录和许可证
+│   ├── PROJECT_STRUCTURE.md → 本文档：目录职责与代码入口
 │   ├── INTEGRATION.md      → SkipCourse 接入边界和待确认信息
 │   ├── BACKEND_INTEGRATION_NEEDED.md → 12 项后端接口需求、未知契约和提问清单
 │   ├── QUALITY_REVIEW.md   → MVP 测试与清洁检查记录
@@ -36,13 +37,12 @@ TALA-Hub/
 ├── vite.config.ts          → React 插件和相对资源路径
 ├── eslint.config.js        → lint 规则
 ├── playwright.config.ts    → 测试浏览器、尺寸和构建预览服务
-├── 汇报给老板.md            → 每轮修改的简单中文记录，最新在上
-├── 会议演示.md              → 本地演示地址、逐步点击路线和简单英语讲稿
-├── PROJECT_STRUCTURE.md    → 本文档
 └── README.md               → 安装、运行、演示入口
 ```
 
 运行后会出现 `node_modules/`、`dist/`、`playwright-report/`、`test-results/` 等本地产物，它们被 Git 忽略，不属于源码结构。`.git/` 由 Git 管理，不手动整理。
+
+上面展示 Git 跟踪的团队文件。本机还可以保留被忽略的个人笔记，它们不属于共享文档。根目录的 `AGENTS.md` 是项目级代理规则入口；`.agents/skills/` 保存开发技能。标准工具配置和 `README.md` 保持根目录位置。
 
 ## 本地目录与清理边界
 
@@ -113,7 +113,7 @@ StudentSchedule → scheduleService.ts → demoData.ts 中的虚构课程
 
 注册草稿仅在组件状态中，刷新或离开会清除；完成后的样例家庭信息经路由 state 传给登录页。密码、文件、医疗记录和支付资料不存储、不发送。Funding 目前只有偏好选项。
 
-`serviceTypes.ts` 是前端需要的数据形状，不是 SkipCourse 已确认的 schema。未来拿到真实接口后，在服务层新增 adapter，把响应转换为这些前端类型，并根据实际需求调整。完整待确认清单见 [INTEGRATION.md](docs/INTEGRATION.md)。无需重做页面，也不要重新实现 SkipCourse 后端。
+`serviceTypes.ts` 是前端需要的数据形状，不是 SkipCourse 已确认的 schema。未来拿到真实接口后，在服务层新增 adapter，把响应转换为这些前端类型，并根据实际需求调整。完整待确认清单见 [INTEGRATION.md](INTEGRATION.md)。无需重做页面，也不要重新实现 SkipCourse 后端。
 
 ## 新功能放哪里
 
@@ -128,6 +128,20 @@ StudentSchedule → scheduleService.ts → demoData.ts 中的虚构课程
 
 ## 最新收尾验证（2026-09-22）
 
-Sponsor 需求对齐版本完成了 Build、Lint、Typecheck 与最新 60/60 Playwright 检查。手机/平板 Dashboard 使用可展开的导航链接，选完自动收起；桌面保留侧栏。普通演示构建另经 320、390、768、1440 四尺寸检查。详情见 [需求与验证记录](docs/SPONSOR_REQUIREMENTS.md)，简单进度见 [汇报给老板](汇报给老板.md)。
+Sponsor 需求对齐版本完成了 Build、Lint、Typecheck 与 60/60 Playwright 检查。手机/平板 Dashboard 使用可展开的导航链接，选完自动收起；桌面保留侧栏。普通演示构建另经 320、390、768、1440 四尺寸检查。详情见 [需求与验证记录](SPONSOR_REQUIREMENTS.md)。
 
-Vercel Preview 的构建命令、输出目录、hash 路由和远端待核对条件维护在 README；后端要提供的 12 项契约维护在 `docs/BACKEND_INTEGRATION_NEEDED.md`。Evidence / AZ Transfer 尚无页面或算法实现，不为等待中的接口创建空目录。
+Vercel Preview 的构建命令与输出目录见根目录 [README](../README.md)，补充说明见下方；后端要提供的 12 项契约见 [BACKEND_INTEGRATION_NEEDED.md](BACKEND_INTEGRATION_NEEDED.md)。Evidence / AZ Transfer 尚无页面或算法实现，不为等待中的接口创建空目录。
+
+## Development and preview notes
+
+- Node: package engines support Node 22.13+ within 22.x, or 24+. The previous local QA used Node 25.6.1; remote Node 24 builds have not been verified.
+- Install with `npm install`, or `npm ci` for a lockfile-based installation. For Linux browser tests, use `npx playwright install --with-deps chromium webkit`.
+- Playwright requires port 4173 to be free. Reports and traces stay in ignored `playwright-report/` and `test-results/`; use `npm run test:ui` for interactive tests.
+- Tests build with QA controls enabled. Before showing the demo, rebuild with `VITE_DEMO_MODE=true VITE_DEMO_TOOLS=false npm run build`, then run `npm run preview`.
+- `VITE_DEMO_MODE=false` disables demo services; it does not enable a real backend. `VITE_*` settings are public browser code, never secrets. See [`.env.example`](../.env.example).
+- HashRouter URLs such as `/#/register` and `/#/dashboard?view=calendar` refresh against the server root. Plain `/register` is not an application URL. Relative assets also support a static project subpath.
+- For a future Vercel Preview, use the repository root, Vite preset, `npm run build`, and `dist`. No extra plugin, rewrite, or `vercel.json` is needed for the current hash routing. The remote project's build overrides, Node version, environment variables, branch mapping and access protection still require verification.
+- Git pushes may trigger a connected hosting service. Do not change production settings, DNS, or domain configuration as part of frontend maintenance. Root `CNAME` is retained and is not automatically copied into `dist/`.
+- Formatting is available through `npm run format`; it targets project code and configuration, not third-party Skills.
+
+References: [HashRouter](https://reactrouter.com/api/declarative-routers/HashRouter), [Vite on Vercel](https://vercel.com/docs/frameworks/frontend/vite), [build configuration](https://vercel.com/docs/builds/configure-a-build), [Node versions](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions).
