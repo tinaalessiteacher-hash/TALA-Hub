@@ -8,13 +8,13 @@ Backend request checklist (12 integrations, unknown contracts and questions): [B
 
 ## Boundaries in this MVP
 
-- `src/authentication/authService.ts` selects the auth adapter and manages the explicitly marked demo session; `demoAuthAdapter.ts` implements demo login.
-- `src/dashboard/skipCourseApi.ts` is the student-data boundary. `demoStudentAdapter.ts` simulates responses, and `demoLearningData.ts` holds fictional learning records.
-- `src/dashboard/learningTypes.ts` and `src/shared/services/serviceTypes.ts` contain frontend models and adapter contracts, not confirmed backend schemas.
-- `src/registration/enrollmentService.ts` owns input checks and the registration submission interface. No real account, billing or provisioning occurs.
-- `src/classes/scheduleService.ts` owns timetable loading and joining; `demoClassSlots.ts` contains fictional availability. The calendar and class list read the same selections.
-- `src/shared/services/demoConfig.ts` owns demo flags; `demoDelay.ts` owns shared simulated latency; `demoData.ts` holds the shared sample identity.
-- `src/public-site/programContent.ts` holds program previews. Other copy stays with its page. **Awaiting final content from Ayushi/Tina.**
+- `frontend/src/authentication/authService.ts` selects the auth adapter and manages the explicitly marked demo session; `demoAuthAdapter.ts` implements demo login.
+- `frontend/src/dashboard/skipCourseApi.ts` is the student-data boundary. `demoStudentAdapter.ts` simulates responses, and `demoLearningData.ts` holds fictional learning records.
+- `frontend/src/dashboard/learningTypes.ts` and `frontend/src/shared/services/serviceTypes.ts` contain frontend models and adapter contracts, not confirmed backend schemas.
+- `frontend/src/registration/enrollmentService.ts` owns input checks and the registration submission interface. No real account, billing or provisioning occurs.
+- `frontend/src/classes/scheduleService.ts` owns timetable loading and joining; `demoClassSlots.ts` contains fictional availability. The calendar and class list read the same selections.
+- `frontend/src/shared/services/demoConfig.ts` owns demo flags; `demoDelay.ts` owns shared simulated latency; `demoData.ts` holds the shared sample identity.
+- `frontend/src/public-site/programContent.ts` holds program previews. Other copy stays with its page. **Awaiting final content from Ayushi/Tina.**
 
 Demo mode defaults on for this local MVP and is visibly labeled across the site. Set `VITE_DEMO_MODE=false` to fail closed: neither account service nor student-data service will use a real or guessed endpoint. This flag is not a backend integration mechanism.
 

@@ -9,12 +9,12 @@ node_modules/
 /汇报给老板.md
 
 # Build output and tool caches
-/dist/
-/build/
-/out/
-/.next/
-/.vite/
-/coverage/
+dist/
+build/
+out/
+.next/
+.vite/
+coverage/
 *.tsbuildinfo
 
 # Local environment files; examples must contain placeholders only
@@ -24,9 +24,9 @@ node_modules/
 !.env.*.example
 
 # Test output
-/playwright-report/
-/test-results/
-/blob-report/
+playwright-report/
+test-results/
+blob-report/
 
 # Local logs
 *.log

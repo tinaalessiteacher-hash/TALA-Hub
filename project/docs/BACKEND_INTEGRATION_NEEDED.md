@@ -48,7 +48,7 @@
 
 - `enrollmentService.ts`：注册表单类型、校验与提交边界。现在返回的姓名/邮箱只用于 demo；真实注册状态、ID、验证和开通结果要按合同扩展。
 - `authService.ts` / `serviceTypes.ts`：认证选择入口与 UI 类型。当前 sessionStorage 是演示标记，真实身份接入时必须替换，不能当成权限凭据。
-- `src/dashboard/skipCourseApi.ts` / `demoStudentAdapter.ts`：学生概览与模拟数据实现分开。真实 adapter 需要从服务端身份解析学生；当前 `getOverview` 没有真实身份契约。
+- `frontend/src/dashboard/skipCourseApi.ts` / `demoStudentAdapter.ts`：学生概览与模拟数据实现分开。真实 adapter 需要从服务端身份解析学生；当前 `getOverview` 没有真实身份契约。
 - `scheduleService.ts`：载入和加入课程边界。当前以样例 email 存标签页选课；接入时改用经过验证的学生标识，并由后端完成选课事务。`ClassSlot` 当前从集中样例推导，真实契约到位后再确定独立类型。
 - `dashboard/demoLearningData.ts` 和 `classes/demoClassSlots.ts`：各功能的样例数据放在对应目录。未来真实响应在服务层校验并转换成页面需要的类型，不把请求散落进页面。
 
@@ -56,7 +56,7 @@
 
 ## Evidence / AZ Transfer 的准备范围
 
-当前架构没有阻碍：将来确认 contract 后，页面与专用服务放在 `src/` 下对应功能目录；真正共用的 UI 放 `src/shared/`，浏览器流程放 `project/tests/`。
+当前架构没有阻碍：将来确认 contract 后，页面与专用服务放在 `frontend/src/` 下对应功能目录；真正共用的 UI 放 `frontend/src/shared/`，浏览器流程放 `frontend/tests/`。
 
 本轮没有新增空目录、占位页面、猜测的数据模型或假结果。前端不实现 tokenization、embeddings、cosine similarity、Neo4j、graph algorithms、evidence scoring 或 AZ Transfer 后端。分数与解释由后端提供，UI 只展示获准展示的结果和状态。
 

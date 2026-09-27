@@ -76,3 +76,13 @@ Team documentation and the unchanged test source moved into `project/docs` and `
 - Relative documentation links resolve; no empty source folders, debug output, source inline styles or new dependencies. Build and test artifacts are removed after verification; temporary QA scripts/screenshots stay outside the repository.
 
 Only the requested structure cleanup and necessary documentation/configuration path updates are in this change. Main, CNAME, DNS and production settings are unchanged. The later user instruction authorizes a normal commit and push to staging, without rewriting history or merging.
+
+## Standalone frontend directory — 2026-09-27
+
+The application, standard tool configuration and automated tests now live together in `frontend/`. Run npm commands from that directory. Team documentation remains in `project/docs/`; README, Git ignore rules and the unchanged CNAME remain at repository root.
+
+- All 60 source files, the original test source and dependency lock file are byte-identical to the previous staging version. Only directory references and documentation changed.
+- Format, Lint, Typecheck and Build: PASS.
+- Complete Playwright suite: **60/60 PASS**, without failures, skips or retries, across 320/390/1440 px Chromium and 768 px WebKit/iPad.
+- Generated build and test output removed after validation; dependencies remain locally ignored.
+- Future preview setup must use `frontend` as its application root. No external hosting or production settings changed.
