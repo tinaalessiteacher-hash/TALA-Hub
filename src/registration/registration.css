@@ -1,0 +1,115 @@
+/* Registration layout, step progress and review. Responsive rules live with their owning styles. */
+
+.enrollment-page {
+  padding-block: var(--space-5);
+}
+.enrollment-page > header {
+  max-width: 48rem;
+  margin-bottom: 2rem;
+}
+.enrollment-layout {
+  display: grid;
+  grid-template-columns: 16rem minmax(0, 1fr);
+  gap: 3rem;
+  align-items: start;
+}
+.enrollment-layout > aside {
+  position: sticky;
+  top: 1rem;
+}
+.enrollment-form {
+  max-width: 44rem;
+  min-width: 0;
+  padding: 2rem;
+  border-radius: var(--radius-card);
+}
+.enrollment-progress {
+  list-style: none;
+  margin: 0 0 1.5rem;
+  padding: 0;
+}
+.enrollment-progress li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem 0.5rem;
+  color: var(--color-muted);
+}
+.enrollment-progress li > span:first-child {
+  width: 1.8rem;
+  height: 1.8rem;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  text-align: center;
+  flex-shrink: 0;
+}
+.enrollment-progress [aria-current] {
+  color: var(--color-ink);
+  font-weight: 700;
+  background: #f2f5eb;
+  border-radius: 6px;
+}
+.review-list > div {
+  padding-block: 1rem;
+  border-bottom: var(--border-divider);
+}
+.review-list dt {
+  font-weight: 700;
+}
+.review-list dd {
+  margin: 0.4rem 0;
+  overflow-wrap: anywhere;
+}
+.enrollment-form h2:focus {
+  outline: none;
+}
+.enrollment-form .notice p:last-child {
+  margin-bottom: 0;
+}
+@media (max-width: 850px) {
+  .enrollment-layout {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .enrollment-layout > aside {
+    position: static;
+  }
+  .enrollment-form {
+    padding: 1.25rem;
+    max-width: none;
+  }
+}
+@media (max-width: 440px) {
+  .enrollment-page {
+    padding-block: 1.5rem;
+  }
+  .enrollment-form {
+    padding: 1rem;
+  }
+}
+
+.enrollment-page > header h1 {
+  font-size: clamp(2rem, 3vw, 2.75rem);
+  margin-block: 0.5rem 1rem;
+}
+.enrollment-form > h2 {
+  font-size: 1.6rem;
+  margin-block: 0.5rem 1rem;
+}
+.enrollment-form > .eyebrow {
+  margin-top: 0;
+}
+@media (max-width: 850px) {
+  .enrollment-page > header {
+    margin-bottom: 1rem;
+  }
+  .enrollment-layout > aside {
+    display: none;
+  }
+  .enrollment-form > .eyebrow {
+    margin-bottom: 0.5rem;
+  }
+  .enrollment-form .plain-fieldset > p:first-child {
+    margin-top: 0;
+  }
+}

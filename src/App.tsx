@@ -1,21 +1,21 @@
 import { lazy, Suspense, useState } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
-import { SiteLayout } from "./components/SiteLayout";
-import { RouteFocus } from "./components/RouteFocus";
-import { CommunityPage } from "./pages/CommunityPage";
-import { HomePage } from "./pages/HomePage";
-import { AboutPage } from "./pages/AboutPage";
-import { ProgramsPage } from "./pages/ProgramsPage";
-import { RegisterPage } from "./pages/RegisterPage";
-import { LoginPage } from "./pages/LoginPage";
+import { SiteLayout } from "./shared/SiteLayout";
+import { RouteFocus } from "./shared/RouteFocus";
+import { CommunityPage } from "./public-site/CommunityPage";
+import { HomePage } from "./public-site/HomePage";
+import { AboutPage } from "./public-site/AboutPage";
+import { ProgramsPage } from "./public-site/ProgramsPage";
+import { RegisterPage } from "./registration/RegisterPage";
+import { LoginPage } from "./authentication/LoginPage";
 const StudentDashboard = lazy(() =>
-  import("./pages/StudentDashboard").then((module) => ({
+  import("./dashboard/StudentDashboard").then((module) => ({
     default: module.StudentDashboard,
   })),
 );
-import { NotFoundPage } from "./pages/NotFoundPage";
-import { readDemoSession, saveDemoSession } from "./services/authService";
-import type { DemoSession } from "./services/serviceTypes";
+import { NotFoundPage } from "./public-site/NotFoundPage";
+import { readDemoSession, saveDemoSession } from "./authentication/authService";
+import type { DemoSession } from "./shared/services/serviceTypes";
 export default function App() {
   const [session, setSession] = useState(readDemoSession);
   const navigate = useNavigate();

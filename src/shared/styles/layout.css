@@ -1,0 +1,213 @@
+/* Site header, public navigation and footer. Responsive rules live with their owning styles. */
+
+.preview-banner {
+  padding: 9px var(--space-3);
+  background: #e8eee7;
+  text-align: center;
+  color: #3f574a;
+  font-size: var(--text-small);
+  line-height: 1.5;
+}
+.preview-banner span {
+  margin-inline: 10px;
+  color: #637c6e;
+}
+.site-header {
+  background: var(--color-paper);
+  border-bottom: 1px solid #e7ebe5;
+}
+.nav-row {
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 38px;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--color-ink);
+  text-decoration: none;
+}
+.brand svg {
+  width: 36px;
+  height: 36px;
+}
+.brand > span {
+  font-size: 2.55rem;
+  font-weight: 650;
+  letter-spacing: -0.09em;
+  line-height: 1.15;
+}
+.brand-dot {
+  color: #768d53;
+}
+.primary-nav {
+  display: flex;
+  align-items: center;
+  gap: 35px;
+  font-size: var(--text-small);
+  width: 77%;
+}
+.primary-nav > a,
+.nav-actions > a:not(.button) {
+  min-height: var(--target-height);
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+.primary-nav a.active:not(.button) {
+  text-decoration: underline;
+  text-decoration-color: #60835d;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 9px;
+}
+.primary-nav a:hover:not(.button) {
+  color: #527346;
+}
+.nav-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.menu-toggle {
+  display: none;
+}
+.site-footer {
+  border-top: var(--border-panel);
+  padding-top: 50px;
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 1fr 0.75fr 1fr;
+  gap: 50px;
+  padding-bottom: 38px;
+}
+.footer-top p {
+  font-size: var(--text-small);
+  margin-top: 17px;
+}
+.footer-top nav {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+.footer-top nav a {
+  min-height: var(--target-height);
+  display: flex;
+  align-items: center;
+  font-size: var(--text-small);
+  text-decoration: none;
+}
+.footer-top nav a:hover {
+  text-decoration: underline;
+}
+.footer-note {
+  max-width: 30ch;
+  justify-self: end;
+}
+.footer-note p {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.footer-note small {
+  font-size: var(--text-small);
+}
+.footer-bottom {
+  border-top: var(--border-panel);
+  padding-block: var(--space-3);
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  color: var(--color-muted);
+  font-size: var(--text-small);
+}
+@media (max-width: 1050px) {
+  .nav-row {
+    gap: 20px;
+  }
+  .primary-nav {
+    width: 80%;
+    gap: 22px;
+  }
+  .nav-actions {
+    gap: 20px;
+  }
+  .nav-actions .button {
+    padding-inline: 13px;
+    font-size: var(--text-small);
+  }
+}
+@media (max-width: 850px) {
+  .preview-banner {
+    padding: var(--space-1) var(--space-2);
+  }
+  .nav-row {
+    min-height: 78px;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+  .brand > span {
+    font-size: 2.2rem;
+  }
+  .brand svg {
+    width: 31px;
+    height: 31px;
+  }
+  .menu-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-height: var(--target-height);
+    border: var(--border-panel);
+    background: transparent;
+    border-radius: 5px;
+    padding: 9px 12px;
+    font-size: var(--text-small);
+  }
+  .primary-nav {
+    display: none;
+    width: 100%;
+    padding-block: 12px 22px;
+  }
+  .primary-nav.is-open {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 3px;
+  }
+  .primary-nav > a {
+    padding: 10px;
+  }
+  .nav-actions {
+    border-top: var(--border-panel);
+    padding-top: 15px;
+    margin: var(--space-1) 0 0;
+    justify-content: space-between;
+    padding-left: 10px;
+  }
+  .footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .footer-note {
+    grid-column: 1 / -1;
+    justify-self: start;
+    max-width: 45ch;
+  }
+  .footer-bottom {
+    flex-direction: column;
+    gap: 9px;
+  }
+}
+@media (min-width: 851px) {
+  .primary-nav {
+    gap: 1.1rem;
+  }
+  .primary-nav > a,
+  .nav-actions > a {
+    font-size: var(--text-small);
+  }
+}

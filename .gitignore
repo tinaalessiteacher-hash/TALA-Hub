@@ -1,7 +1,10 @@
 # Installed dependencies
 node_modules/
 
-# Personal local notes: keep on disk, never commit
+# Personal tools and notes: keep on disk, never commit
+/.agents/
+/AGENTS.md
+/docs/skills/
 /会议演示.md
 /汇报给老板.md
 
@@ -35,8 +38,4 @@ Thumbs.db
 *.swo
 *~
 .idea/
-.vscode/*
-!.vscode/extensions.json
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
+.vscode/

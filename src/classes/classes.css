@@ -1,0 +1,39 @@
+.schedule-list {
+  list-style: none;
+  padding: 0;
+}
+.schedule-list li {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  padding-block: 1.5rem;
+  border-bottom: var(--border-divider);
+}
+.class-time {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 9rem;
+  font-size: var(--text-small);
+}
+.class-description {
+  flex: 1;
+  min-width: 0;
+}
+.class-description h3 {
+  margin: 0;
+}
+.class-description p {
+  margin: 0.4rem 0;
+}
+@media (max-width: 850px) {
+  .schedule-list li {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+  .schedule-list li > button {
+    width: 100%;
+  }
+  .class-time {
+    min-width: 7rem;
+  }
+}

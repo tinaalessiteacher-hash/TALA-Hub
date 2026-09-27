@@ -1,0 +1,123 @@
+.auth-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-5);
+  padding-block: var(--space-section);
+  align-items: start;
+}
+.auth-story {
+  padding: 43px;
+  background: #e8eee3;
+  border-radius: 12px 80px 12px 12px;
+  position: sticky;
+  top: 30px;
+}
+.auth-story h2 {
+  font-size: clamp(2.3rem, 3.5vw, 3.35rem);
+}
+.auth-story > p:not(.eyebrow) {
+  font-size: 0.95rem;
+  max-width: 33ch;
+}
+.auth-story-note {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: var(--text-small);
+}
+.auth-story-note p {
+  margin: 0;
+  font-size: var(--text-small);
+}
+.auth-story-note .icon {
+  width: 40px;
+  height: 40px;
+}
+.auth-panel {
+  justify-self: center;
+  padding-block: 0;
+  max-width: 460px;
+  width: 100%;
+}
+.auth-panel h1 {
+  font-size: clamp(1.8rem, 3vw, 2.4rem);
+  margin-bottom: 12px;
+}
+.auth-panel > p {
+  font-size: var(--text-small);
+}
+.or-divider {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  font-size: var(--text-small);
+  color: var(--color-muted);
+  margin-block: 23px;
+}
+.or-divider::before,
+.or-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--color-line);
+}
+.auth-panel > .small {
+  margin-top: 18px;
+  font-size: var(--text-small);
+}
+.login-illustration {
+  margin: 38px 0;
+  background: #fcfdf5;
+  padding: 42px 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+  border-radius: 70px 70px 4px 4px;
+}
+.login-illustration > .icon {
+  width: 96px;
+  height: 96px;
+  stroke-width: 1;
+}
+.login-illustration span {
+  font-family: Georgia, serif;
+  font-size: 1.15rem;
+}
+.pencil-line {
+  height: 3px;
+  width: 150px;
+  background: #ddc473;
+}
+@media (max-width: 1050px) {
+  .auth-layout {
+    gap: 40px;
+  }
+  .auth-story {
+    padding: 30px;
+  }
+}
+@media (max-width: 850px) {
+  .auth-layout {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding-block: 30px 45px;
+    max-width: 560px;
+  }
+  .auth-story {
+    display: none;
+    position: static;
+    padding: 30px;
+    border-radius: 12px 60px 12px 12px;
+  }
+  .auth-panel {
+    max-width: none;
+    padding-top: 0;
+  }
+}
+.identity-choice {
+  border: var(--border-divider);
+  border-radius: var(--radius-control);
+  margin: 1rem 0;
+  padding: 0.75rem;
+}

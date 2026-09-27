@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
-  testDir: "./tests",
+  testDir: "./project/tests",
   fullyParallel: true,
   // Allow browser scheduling delays on local machines; assertions still auto-wait.
   expect: { timeout: 10000 },
