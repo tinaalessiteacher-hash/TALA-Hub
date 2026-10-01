@@ -63,7 +63,7 @@ If publishing static files manually, publish the contents of `frontend/dist/`. D
 1. Confirm that the hosting project targets the preview environment and the intended `staging` commit.
 2. Start the preview build using the host's deployment mechanism. The exact platform steps must be confirmed by the hosting owner.
 3. Check the build log for success. Record the commit, preview URL and deployment identifier.
-4. Open the remote preview URL and complete: Home → Registration → Parent Account → Student Information → Enrollment → Documents → Funding → Review → 2FA Setup → Verification (demo code `246810`) → Parent Workspace → Student Login → Dashboard → Add Class → Calendar.
+4. Open the remote preview URL and complete: Home → Registration → Parent Account → Student Information → Enrollment → Documents → Funding → Review → 2FA Setup → Verification (current authenticator code; Email demo only uses `246810`) → Parent Workspace → Student Login → Dashboard → Add Class → Calendar.
 5. Also check Enrollment status → Approved (demo) → Payment. Confirm no card details are collected and the result says no money was paid. Check parent/student switching, mobile navigation and keyboard navigation. Refresh a direct route such as `/#/register`.
 6. Confirm there are no broken assets, browser console errors, horizontal overflow or QA controls. Demo labels must remain visible.
 

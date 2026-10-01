@@ -9,12 +9,28 @@ export function PaymentPage({ session }: { session: DemoSession }) {
       <div className="enrollment-form">
         <p className="eyebrow">Enrollment · Funding</p>
         <h1>Payment</h1>
+        <p>Confirm a funding path for this approved enrollment demo.</p>
+        <ol className="payment-steps" aria-label="Enrollment payment progress">
+          <li className="is-complete">Application</li>
+          <li className="is-complete">Approval</li>
+          <li className="is-current" aria-current="step">
+            Funding
+          </li>
+        </ol>
         <div className="notice">
           <strong>Payment demo · AWAITING BACKEND</strong>
           No charge will be made. Do not enter real payment information. Real
           approval, billing and payment processing are not connected.
         </div>
-        {state.status === "loading" && <p role="status">Checking approval…</p>}
+        {state.status === "loading" && (
+          <div className="payment-state" role="status">
+            <span className="state-dot" aria-hidden="true" />
+            <div>
+              <strong>Checking approval</strong>
+              <p>Confirming that this demo can continue to funding…</p>
+            </div>
+          </div>
+        )}
         {state.status === "error" && (
           <div role="alert" className="notice error">
             <p>{state.message}</p>
@@ -27,15 +43,20 @@ export function PaymentPage({ session }: { session: DemoSession }) {
           (state.approval === "approved" ? (
             <PaymentForm session={session} />
           ) : (
-            <div className="notice" role="status">
-              <strong>Approval required</strong>
-              <p>
-                This application is{" "}
-                {state.approval === "pending"
-                  ? "pending review"
-                  : "not approved"}
-                . Return to enrollment status before continuing.
-              </p>
+            <div className="payment-state payment-state-locked" role="status">
+              <span className="state-lock" aria-hidden="true">
+                ×
+              </span>
+              <div>
+                <strong>Approval required</strong>
+                <p>
+                  This application is{" "}
+                  {state.approval === "pending"
+                    ? "pending review"
+                    : "not approved"}
+                  . Return to enrollment status before continuing.
+                </p>
+              </div>
             </div>
           ))}
         <div className="form-actions">

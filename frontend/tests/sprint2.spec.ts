@@ -1,7 +1,12 @@
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-import { completeDemoVerification, registerDemoFamily } from "./signupHelpers";
+import {
+  completeDemoVerification,
+  registerDemoFamily,
+  readAuthenticator,
+  invalidCode,
+} from "./signupHelpers";
 
 const failures = new WeakMap<Page, string[]>();
 test.beforeEach(async ({ page }) => {
@@ -61,9 +66,11 @@ test("SCRUM-46/47: setup, empty and invalid codes, retry, back and verified pare
   page,
 }, testInfo) => {
   await registerDemoFamily(page);
+  const authenticator = await readAuthenticator(page);
   await checkPage(page);
   await page.screenshot({
     path: testInfo.outputPath("two-factor-setup.png"),
+    mask: [page.locator(".two-factor-provisioning")],
     fullPage: true,
   });
   expect(
@@ -80,7 +87,7 @@ test("SCRUM-46/47: setup, empty and invalid codes, retry, back and verified pare
   await page.getByLabel("Verification code").fill("abcdef");
   await page.getByRole("button", { name: "Verify code", exact: true }).click();
   await expect(page.getByRole("alert")).toContainText("six-digit");
-  await page.getByLabel("Verification code").fill("000000");
+  await page.getByLabel("Verification code").fill(invalidCode(authenticator));
   await page.getByRole("button", { name: "Verify code", exact: true }).click();
   await expect(page.getByRole("button", { name: "Verifying…" })).toBeDisabled();
   await expect(page.getByRole("alert")).toContainText("does not match");
@@ -97,7 +104,7 @@ test("SCRUM-46/47: setup, empty and invalid codes, retry, back and verified pare
   await page.getByRole("button", { name: "Back to setup" }).click();
   await page.getByRole("button", { name: "Continue to verification" }).click();
   await expect(page.getByLabel("Verification code")).toHaveValue("");
-  await page.getByLabel("Verification code").fill("246810");
+  await page.getByLabel("Verification code").fill(authenticator.generate());
   await page.getByText("Demo testing options", { exact: true }).click();
   await page.getByLabel("Simulate 2FA service error").check();
   await page.getByRole("button", { name: "Verify code", exact: true }).click();
@@ -168,8 +175,9 @@ test("SCRUM-47: refresh and interrupted setup never authenticate", async ({
     page.getByRole("heading", { name: "Start with registration" }),
   ).toBeVisible();
   await registerDemoFamily(page);
+  let authenticator = await readAuthenticator(page);
   await page.getByRole("button", { name: "Continue to verification" }).click();
-  await page.getByLabel("Verification code").fill("246810");
+  await page.getByLabel("Verification code").fill(authenticator.generate());
   await page.reload();
   await expect(
     page.getByRole("heading", { name: "Start with registration" }),
@@ -180,8 +188,9 @@ test("SCRUM-47: refresh and interrupted setup never authenticate", async ({
     ),
   ).toBeNull();
   await registerDemoFamily(page);
+  authenticator = await readAuthenticator(page);
   await page.getByRole("button", { name: "Continue to verification" }).click();
-  await page.getByLabel("Verification code").fill("246810");
+  await page.getByLabel("Verification code").fill(authenticator.generate());
   await page.getByRole("button", { name: "Verify code", exact: true }).click();
   await route(page, "/events");
   await expect(page).toHaveURL(/events/);
@@ -214,6 +223,13 @@ test("SCRUM-48/49: signup to approval to payment, validation and failure recover
   await checkPage(page);
   await openApprovedPayment(page);
   await checkPage(page);
+  await expect(
+    page.getByText("Approved to continue", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("list", { name: "Enrollment payment progress" }),
+  ).toContainText("ApplicationApprovalFunding");
+  await expect(page.getByText("taylor@example.com")).toBeVisible();
   await page.screenshot({
     path: testInfo.outputPath("payment.png"),
     fullPage: true,
@@ -227,6 +243,12 @@ test("SCRUM-48/49: signup to approval to payment, validation and failure recover
   await expect(page.getByLabel("Funding method")).toBeFocused();
   await expect(page.getByRole("alert")).toContainText("Choose a funding");
   await page.getByLabel("Funding method").selectOption("Private");
+  await expect(
+    page.getByText("Private funding selected", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("securely collect billing details", { exact: false }),
+  ).toBeVisible();
   await page
     .getByRole("button", { name: "Complete payment demo", exact: true })
     .click();
@@ -355,9 +377,10 @@ test("SCRUM-48: ESA and STO choices, keyboard submission and no financial persis
       page.getByRole("button", { name: "Complete payment demo", exact: true }),
     ).toBeFocused();
     await page.keyboard.press("Enter");
-    await expect(
-      page.getByRole("heading", { name: "Payment demo complete" }),
-    ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Payment demo complete" }),
+  ).toBeVisible();
+  await expect(page.getByText("$0 · Demo only")).toBeVisible();
     await expect(
       page.getByText(`Sample funding choice: ${funding}.`),
     ).toBeVisible();
@@ -391,3 +414,6 @@ test("SCRUM-46: leaving registration during submission cancels its redirect", as
     page.getByRole("heading", { name: "Start with registration" }),
   ).toBeVisible();
 });
+
+// Authentication tests handle ephemeral enrollment secrets; do not record traces.
+test.use({ trace: "off", screenshot: "off" });

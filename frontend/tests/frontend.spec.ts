@@ -871,3 +871,6 @@ test("funding choices, waiting list and registered parent retain the correct stu
     }
   }
 });
+
+// Authentication tests handle ephemeral enrollment secrets; do not record traces.
+test.use({ trace: "off", screenshot: "off" });

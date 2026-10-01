@@ -64,24 +64,57 @@ export function PaymentForm({ session }: { session: DemoSession }) {
   }
   if (receipt)
     return (
-      <div role="status">
+      <section className="payment-success" role="status">
+        <span className="success-mark" aria-hidden="true">
+          ✓
+        </span>
         <h2 ref={success} tabIndex={-1}>
           Payment demo complete
         </h2>
-        <p>Sample funding choice: {receipt.funding}.</p>
+        <p className="payment-success-lead">
+          Sample funding choice: {receipt.funding}. It is recorded only for this
+          browser session.
+        </p>
+        <dl className="payment-summary">
+          <div>
+            <dt>Status</dt>
+            <dd>Demo complete</dd>
+          </div>
+          <div>
+            <dt>Funding method</dt>
+            <dd>{receipt.funding}</dd>
+          </div>
+          <div>
+            <dt>Amount charged</dt>
+            <dd>$0 · Demo only</dd>
+          </div>
+        </dl>
         <p>
           No money was paid, no funding was approved and no financial
           information was saved. A real receipt will come from the payment
           provider once connected.
         </p>
-      </div>
+      </section>
     );
   return (
-    <form ref={form} onSubmit={submit} noValidate aria-busy={pending}>
-      <dl className="review-list">
+    <form
+      ref={form}
+      className="payment-form"
+      onSubmit={submit}
+      noValidate
+      aria-busy={pending}
+    >
+      <div className="payment-approved-banner" role="status">
+        <span aria-hidden="true">✓</span>
         <div>
-          <dt>Application status</dt>
-          <dd>Approved (demo only)</dd>
+          <strong>Approved to continue</strong>
+          <p>This status is a demo fixture and was not issued by TALA.</p>
+        </div>
+      </div>
+      <dl className="payment-summary">
+        <div>
+          <dt>Account</dt>
+          <dd>{session.email}</dd>
         </div>
         <div>
           <dt>Amount due</dt>
@@ -89,7 +122,7 @@ export function PaymentForm({ session }: { session: DemoSession }) {
         </div>
       </dl>
       <fieldset className="plain-fieldset" disabled={pending}>
-        <legend className="sr-only">Payment demo choices</legend>
+        <legend>Choose a funding method</legend>
         <div className="form-field">
           <label htmlFor="payment-funding">Funding method</label>
           <select
@@ -116,6 +149,22 @@ export function PaymentForm({ session }: { session: DemoSession }) {
           This choice does not verify ESA or STO eligibility. Card numbers, bank
           details and billing addresses are not collected.
         </p>
+        {draft.funding && (
+          <div className="funding-explanation" role="status">
+            <strong>
+              {draft.funding === "Private"
+                ? "Private funding selected"
+                : `${draft.funding} funding selected`}
+            </strong>
+            <p>
+              {draft.funding === "ESA"
+                ? "A future integration must verify ESA eligibility and approved expenses before payment."
+                : draft.funding === "STO"
+                  ? "A future integration must confirm the scholarship award and remaining balance."
+                  : "A future payment provider will securely collect billing details. This demo does not."}
+            </p>
+          </div>
+        )}
         <label className="checkbox-row">
           <input
             id="payment-acknowledged"
@@ -142,7 +191,7 @@ export function PaymentForm({ session }: { session: DemoSession }) {
             {error}
           </p>
         )}
-        <button className="button" type="submit">
+        <button className="button payment-submit" type="submit">
           {pending ? "Completing payment demo…" : "Complete payment demo"}
         </button>
       </fieldset>

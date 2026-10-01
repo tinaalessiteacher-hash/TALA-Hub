@@ -1,12 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { Link } from "react-router-dom";
+import { TwoFactorSetup } from "./TwoFactorSetup";
 import { TextField } from "../shared/TextField";
 import { demoEnabled, demoToolsEnabled } from "../shared/services/demoConfig";
 import type { EnrollmentReceipt } from "../registration/enrollmentService";
 import { RegistrationComplete } from "../registration/RegistrationComplete";
 import { demoVerificationCode, twoFactorService } from "./twoFactorService";
-import type { TwoFactorChallenge } from "./twoFactorService";
+import type {
+  AuthenticatorSetup,
+  TwoFactorChallenge,
+  TwoFactorMethod,
+} from "./twoFactorService";
 
 export function TwoFactorPage({
   receipt,
@@ -20,6 +25,10 @@ export function TwoFactorPage({
   onCancel: () => void;
 }) {
   const [challenge, setChallenge] = useState<TwoFactorChallenge | null>(null);
+  const [method, setMethod] = useState<TwoFactorMethod>("authenticator");
+  const [prepared, setPrepared] = useState<AuthenticatorSetup | null>(null);
+  const [preparationError, setPreparationError] = useState("");
+  const [attempt, setAttempt] = useState(0);
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
@@ -28,6 +37,30 @@ export function TwoFactorPage({
   const activeChallenge = useRef<TwoFactorChallenge | null>(null);
   const heading = useRef<HTMLHeadingElement>(null);
   const errorBox = useRef<HTMLParagraphElement>(null);
+  useEffect(() => {
+    if (!receipt || verified || method !== "authenticator" || !demoEnabled)
+      return;
+    const controller = new AbortController();
+    let setup: AuthenticatorSetup | null = null;
+    twoFactorService
+      .prepareAuthenticator(receipt.parentEmail, controller.signal)
+      .then((result) => {
+        setup = result;
+        setPrepared(result);
+      })
+      .catch((failure: unknown) => {
+        if (!controller.signal.aborted)
+          setPreparationError(
+            failure instanceof Error
+              ? failure.message
+              : "Could not prepare setup. Try again.",
+          );
+      });
+    return () => {
+      controller.abort();
+      if (setup) twoFactorService.cancel(setup);
+    };
+  }, [receipt, verified, method, attempt]);
   useEffect(
     () => () => {
       request.current?.abort();
@@ -64,11 +97,14 @@ export function TwoFactorPage({
         );
         activeChallenge.current = null;
         setCode("");
+        setPrepared(null);
         onVerified();
       } else {
         const next = await twoFactorService.setup(
+          method,
           controller.signal,
           simulateError,
+          prepared,
         );
         activeChallenge.current = next;
         setChallenge(next);
@@ -84,7 +120,7 @@ export function TwoFactorPage({
     }
   }
   function back() {
-    if (challenge) twoFactorService.cancel(challenge);
+    if (challenge?.method === "email") twoFactorService.cancel(challenge);
     activeChallenge.current = null;
     setChallenge(null);
     setCode("");
@@ -120,16 +156,48 @@ export function TwoFactorPage({
         </h1>
         <p>
           {challenge
-            ? "Enter the sample code to finish this signup demo."
+            ? "Enter the verification code to finish this signup demo."
             : "A second verification step comes after your parent account details, before opening your workspace."}
         </p>
         <div className="notice">
           <strong>2FA demo · AWAITING BACKEND</strong>
-          No email or text is sent, and no authenticator is connected. This does
-          not secure a real account. Delivery method and recovery rules are
-          awaiting confirmation.
+          Authenticator codes are checked locally in this browser. This does not
+          secure a real account. No email or text is sent. Server verification
+          and recovery are awaiting backend integration.
         </div>
         <form onSubmit={submit} noValidate aria-busy={pending}>
+          {!challenge && (
+            <TwoFactorSetup
+              prepared={prepared}
+              preparationError={preparationError}
+              onRetry={() => {
+                setPreparationError("");
+                setPrepared(null);
+                setAttempt((value) => value + 1);
+              }}
+              method={method}
+              onChange={(next) => {
+                setPrepared(null);
+                setPreparationError("");
+                setMethod(next);
+                setError("");
+              }}
+              name={receipt.parentName}
+              email={receipt.parentEmail}
+              disabled={pending || !demoEnabled}
+            />
+          )}
+          {challenge && (
+            <p className="small">
+              Selected method:{" "}
+              <strong>
+                {challenge.method === "authenticator"
+                  ? "Authenticator app"
+                  : "Email code"}
+              </strong>{" "}
+              · Demo only
+            </p>
+          )}
           {challenge && (
             <TextField
               id="verification-code"
@@ -147,11 +215,15 @@ export function TwoFactorPage({
               readOnly={pending}
               error={error || undefined}
               hint={
-                <>
-                  For this demo only, enter{" "}
-                  <strong>{demoVerificationCode}</strong>. No real code is
-                  needed.
-                </>
+                challenge.method === "authenticator" ? (
+                  "Enter the current six-digit code from your authenticator app. Codes change every 30 seconds."
+                ) : (
+                  <>
+                    For this demo only, enter{" "}
+                    <strong>{demoVerificationCode}</strong>. No real code is
+                    needed.
+                  </>
+                )
               }
             />
           )}
@@ -176,7 +248,14 @@ export function TwoFactorPage({
                 Back to setup
               </button>
             )}
-            <button className="button" disabled={pending || !demoEnabled}>
+            <button
+              className="button"
+              disabled={
+                pending ||
+                !demoEnabled ||
+                (!challenge && method === "authenticator" && !prepared)
+              }
+            >
               {pending
                 ? challenge
                   ? "Verifying…"

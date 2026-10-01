@@ -129,3 +129,104 @@
   font-size: clamp(1.7rem, 3vw, 2.2rem);
   overflow-wrap: anywhere;
 }
+
+/* Signup 2FA setup only; other authentication pages keep their layout. */
+.two-factor-account {
+  margin: 0 0 1.5rem;
+  padding-block: 1rem;
+  border-block: var(--border-divider);
+}
+.two-factor-account > div {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: 1rem;
+  padding-block: 0.25rem;
+  font-size: var(--text-small);
+}
+.two-factor-account dt {
+  color: var(--color-muted);
+}
+.two-factor-account dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.two-factor-methods {
+  border: 0;
+  padding: 0;
+  margin: 0 0 1.5rem;
+  min-width: 0;
+}
+.two-factor-methods legend {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+.two-factor-methods label {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  min-height: var(--control-height);
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border: var(--border-panel);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+.two-factor-methods label:has(input:checked) {
+  border-color: var(--color-ink);
+  background: var(--color-paper);
+}
+.two-factor-methods input {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: var(--color-ink);
+}
+.two-factor-methods strong,
+.two-factor-methods small {
+  display: block;
+  font-size: var(--text-small);
+}
+.two-factor-methods small {
+  color: var(--color-muted);
+  margin-top: 0.25rem;
+}
+.two-factor-instructions h2 {
+  font-size: 1.3rem;
+}
+.two-factor-manual h3 {
+  font-size: 1rem;
+  margin-top: 0;
+}
+.two-factor-provisioning {
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+.two-factor-manual code {
+  display: block;
+  padding: 0.75rem;
+  background: var(--color-paper);
+  border: var(--border-panel);
+  border-radius: var(--radius-control);
+  overflow-wrap: anywhere;
+  font-size: var(--text-small);
+}
+@media (max-width: 540px) {
+  .two-factor-provisioning {
+    grid-template-columns: 1fr;
+  }
+  .two-factor-account > div {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+    padding-block: 0.4rem;
+  }
+}
+
+.two-factor-qr-image {
+  display: block;
+  width: 240px;
+  max-width: 100%;
+  height: auto;
+  background: white;
+}
