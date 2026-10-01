@@ -1,3 +1,4 @@
+import { demoDelay } from "../shared/services/demoDelay";
 import { demoEnabled } from "../shared/services/demoConfig";
 export const enrollmentSteps = [
   "Parent account",
@@ -73,10 +74,11 @@ export interface EnrollmentService {
   submit(
     draft: EnrollmentDraft,
     simulateError?: boolean,
+    signal?: AbortSignal,
   ): Promise<EnrollmentReceipt>;
 }
 export const enrollmentService: EnrollmentService = {
-  async submit(draft, simulateError) {
+  async submit(draft, simulateError, signal) {
     if (!demoEnabled)
       throw new Error("AWAITING BACKEND — enrollment is not connected.");
     if (
@@ -85,7 +87,7 @@ export const enrollmentService: EnrollmentService = {
       )
     )
       throw new Error("Please check each registration step.");
-    await new Promise((resolve) => setTimeout(resolve, 700));
+    await demoDelay(700, signal);
     if (simulateError)
       throw new Error(
         "The demo could not complete. Your entries are still here. Uncheck the test error and retry.",

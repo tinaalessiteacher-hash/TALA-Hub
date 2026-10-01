@@ -6,6 +6,10 @@
 
 代码入口和替换方式见 [INTEGRATION.md](INTEGRATION.md)。业务来源和 Tina/Sponsor 待确认项见 [SPONSOR_REQUIREMENTS.md](SPONSOR_REQUIREMENTS.md)。
 
+## Sprint 2 additions
+
+Signup now includes a demo 2FA step, and payment UI requires a demo approval state. Real second-factor enrollment/verification, approval lookup and payment confirmation are still needed. See [SPRINT_2.md](SPRINT_2.md) for the frontend interfaces and decisions required from Karl, Tina and Sponsor.
+
 ## 每一项都需要的契约
 
 以下状态适用于下面 **全部 12 项接入**，并非已默认采用某种认证或请求格式。

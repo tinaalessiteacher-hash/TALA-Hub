@@ -86,3 +86,16 @@ The application, standard tool configuration and automated tests now live togeth
 - Complete Playwright suite: **60/60 PASS**, without failures, skips or retries, across 320/390/1440 px Chromium and 768 px WebKit/iPad.
 - Generated build and test output removed after validation; dependencies remain locally ignored.
 - Future preview setup must use `frontend` as its application root. No external hosting or production settings changed.
+
+## Sprint 2 verification — 2026-09-30
+
+SCRUM-46/47 add signup 2FA setup and verification UI. SCRUM-48/49 add payment UI and approval-gated navigation. These are explicit frontend demos with no Firebase, OAuth, approval or payment backend. Implementation details and the changed-file list are in [SPRINT_2.md](SPRINT_2.md).
+
+- Format, Lint, Typecheck and Build: PASS.
+- Final full Playwright run: **92/92 PASS**, zero failures, skipped tests or retries, at 320/390/1440 px Chromium and 768 px WebKit/iPad.
+- Existing registration, login, parent/student switching, dashboard and class/calendar tests remain enabled. Signup journeys now verify the new 2FA step.
+- Added coverage for code validation, service errors, retry, cancellation, refresh, anonymous/unapproved access, funding choices, keyboard submission, storage boundaries, accessibility and payment select touch targets.
+- Fixed late registration redirects by cancelling in-flight submission on navigation. WebKit payment selects now retain 48px height. The keyboard test uses the existing suite's Option+Tab convention on WebKit.
+- No new dependencies, real endpoints, payment fields, credentials or production configuration changes. Skills and private notes remain local and ignored.
+
+Final demo review: the normal build (QA controls off) passed the complete signup → 2FA → approval → payment → dashboard walkthrough at 320, 390, 768 and 1440 px, with no console errors, external requests or horizontal overflow. Generated reports and screenshots remain outside Git.

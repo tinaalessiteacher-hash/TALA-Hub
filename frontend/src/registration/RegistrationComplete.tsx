@@ -11,7 +11,7 @@ export function RegistrationComplete({
   return (
     <section className="container enrollment-page">
       <div className="enrollment-form">
-        <p className="eyebrow">Registration demo complete</p>
+        <p className="eyebrow">Signup and verification demo complete</p>
         <h1 ref={heading} tabIndex={-1}>
           Your family demo is ready.
         </h1>
@@ -26,8 +26,17 @@ export function RegistrationComplete({
             Real student access will follow verified registration and billing.
           </p>
         </div>
+        <p role="status">
+          Verification successful. Your parent demo session is open; your real
+          identity has not been verified.
+        </p>
+        <p>
+          <Link className="button" to="/dashboard">
+            Continue to parent workspace
+          </Link>
+        </p>
         <Link
-          className="button"
+          className="button button-outline"
           to="/login"
           state={{
             registered: {

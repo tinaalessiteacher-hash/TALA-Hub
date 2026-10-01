@@ -2,6 +2,8 @@
 
 Status: **frontend demo; real backend integration AWAITING BACKEND**.
 
+Sprint 2 adds signup verification and approval-gated payment UI. See [SPRINT_2.md](SPRINT_2.md) for service boundaries, demo state lifetime and the backend decisions still needed. No real auth or payment provider is connected.
+
 Latest scope and source differences: [SPONSOR_REQUIREMENTS.md](SPONSOR_REQUIREMENTS.md).
 
 Backend request checklist (12 integrations, unknown contracts and questions): [BACKEND_INTEGRATION_NEEDED.md](BACKEND_INTEGRATION_NEEDED.md). This file explains existing code boundaries; the checklist records what the Backend Team must supply.

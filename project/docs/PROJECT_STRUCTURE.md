@@ -10,7 +10,8 @@ TALA-Hub/
 │   ├── src/
 │   │   ├── public-site/       首页、介绍、项目、活动、联系
 │   │   ├── registration/      注册、Funding、复查和完成页
-│   │   ├── authentication/    登录、身份选择、演示会话
+│   │   ├── authentication/    登录、身份选择、2FA 设置与验证码、演示会话
+│   │   ├── payment/           审批状态、Payment 表单和模拟服务
 │   │   ├── dashboard/         学生/家长工作区和学习记录
 │   │   ├── classes/           可选课程、加入课程和个人日历
 │   │   ├── shared/            共用组件、services/ 和 styles/
@@ -55,7 +56,14 @@ TALA-Hub/
 | Available Classes / My Classes / Personal Calendar | `frontend/src/classes/StudentSchedule.tsx`；共用一套课表与数据，不维护三份列表 |
 | 选课、加载和本标签页保存 | `frontend/src/classes/useStudentSchedule.ts` → `scheduleService.ts` |
 
-**Calendar** 目前就是已选课程的日历视图，所以和 Classes 放在一起。**Funding** 目前就是注册中的偏好选择，不是真实支付系统，所以留在 Registration。确认有独立业务后再拆目录，不预建空的 calendar/funding 文件夹。
+**Calendar** 目前就是已选课程的日历视图，所以和 Classes 放在一起。**Funding** 在注册阶段是偏好选择；获批后的独立演示流程放在 `payment/`，也不是真实支付系统。确认有独立业务后再拆目录，不预建空的 calendar/funding 文件夹。
+
+## Sprint 2 新功能
+
+- 注册提交后进入 `authentication/TwoFactorPage.tsx`，`twoFactorService.ts` 负责模拟设置和校验；成功后由 `App.tsx` 打开家长演示会话。
+- `payment/ApprovalPage.tsx` 显示审批；`PaymentPage.tsx` 检查访问条件；`PaymentForm.tsx` 管表单。`useApproval.ts` 管加载/重试，`paymentService.ts` 是未来后端接入边界，`payment.css` 管该功能样式。
+- Sprint 2 说明和待确认内容见 [SPRINT_2.md](SPRINT_2.md)，新增浏览器测试在 `frontend/tests/sprint2.spec.ts`，注册测试共用步骤在 `signupHelpers.ts`。
+- 2FA、审批、付款都只是标明的 demo，不是真实认证或支付。
 
 ## Shared 放什么
 

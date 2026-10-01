@@ -53,6 +53,9 @@ export function CommunityWorkspace({
           </p>
         </>
       )}
+      <p>
+        <Link to="/enrollment-status">Enrollment status &amp; payment</Link>
+      </p>
       <h2>Community calendar</h2>
       <p>AWAITING SPONSOR — no confirmed events to display.</p>
       <Link to="/events">Community events</Link>

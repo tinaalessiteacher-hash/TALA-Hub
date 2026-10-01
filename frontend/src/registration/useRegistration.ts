@@ -7,7 +7,9 @@ import type {
   EnrollmentErrors,
   EnrollmentReceipt,
 } from "./enrollmentService";
-export function useRegistration() {
+export function useRegistration(
+  onComplete: (receipt: EnrollmentReceipt) => void,
+) {
   const [params] = useSearchParams();
   const [draft, setDraft] = useState<EnrollmentDraft>({
     parentName: "",
@@ -30,7 +32,8 @@ export function useRegistration() {
   const [failure, setFailure] = useState("");
   const [simulateError, setSimulateError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [receipt, setReceipt] = useState<EnrollmentReceipt | null>(null);
+  const request = useRef<AbortController | null>(null);
+  useEffect(() => () => request.current?.abort(), []);
   const heading = useRef<HTMLHeadingElement>(null);
   const form = useRef<HTMLFormElement>(null);
   const failureBox = useRef<HTMLParagraphElement>(null);
@@ -39,7 +42,7 @@ export function useRegistration() {
   }, [failure]);
   useEffect(() => {
     heading.current?.focus();
-  }, [step, receipt]);
+  }, [step]);
   function change<K extends keyof EnrollmentDraft>(
     key: K,
     value: EnrollmentDraft[K],
@@ -49,7 +52,7 @@ export function useRegistration() {
   }
   async function next(event: FormEvent) {
     event.preventDefault();
-    if (pending) return;
+    if (request.current) return;
     const checked = validateEnrollment(draft, step);
     setErrors(checked);
     setFailure("");
@@ -62,18 +65,27 @@ export function useRegistration() {
       setStep(step + 1);
       return;
     }
+    const controller = new AbortController();
+    request.current = controller;
     setPending(true);
     try {
-      setReceipt(await enrollmentService.submit(draft, simulateError));
+      const receipt = await enrollmentService.submit(
+        draft,
+        simulateError,
+        controller.signal,
+      );
       setDraft((current) => ({
         ...current,
         password: "",
         confirmPassword: "",
       }));
+      onComplete(receipt);
     } catch (error) {
-      setFailure(error instanceof Error ? error.message : "Please retry.");
+      if (!controller.signal.aborted)
+        setFailure(error instanceof Error ? error.message : "Please retry.");
     } finally {
-      setPending(false);
+      if (!controller.signal.aborted) setPending(false);
+      request.current = null;
     }
   }
   function goBack() {
@@ -89,7 +101,6 @@ export function useRegistration() {
     failure,
     simulateError,
     showPassword,
-    receipt,
     heading,
     form,
     failureBox,

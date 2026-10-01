@@ -7,6 +7,11 @@ import { HomePage } from "./public-site/HomePage";
 import { AboutPage } from "./public-site/AboutPage";
 import { ProgramsPage } from "./public-site/ProgramsPage";
 import { RegisterPage } from "./registration/RegisterPage";
+import { ApprovalPage } from "./payment/ApprovalPage";
+import { PaymentPage } from "./payment/PaymentPage";
+import { resetPaymentDemo } from "./payment/paymentService";
+import { TwoFactorPage } from "./authentication/TwoFactorPage";
+import type { EnrollmentReceipt } from "./registration/enrollmentService";
 import { LoginPage } from "./authentication/LoginPage";
 const StudentDashboard = lazy(() =>
   import("./dashboard/StudentDashboard").then((module) => ({
@@ -19,11 +24,38 @@ import type { DemoSession } from "./shared/services/serviceTypes";
 export default function App() {
   const [session, setSession] = useState(readDemoSession);
   const navigate = useNavigate();
+  const [signup, setSignup] = useState<EnrollmentReceipt | null>(null);
+  const needsVerification = !!signup && !session;
+  function beginVerification(receipt: EnrollmentReceipt) {
+    resetPaymentDemo();
+    saveDemoSession(null);
+    setSession(null);
+    setSignup(receipt);
+    navigate("/two-factor", { replace: true });
+  }
+  function verified() {
+    if (!signup) return;
+    const next: DemoSession = {
+      mode: "demo",
+      role: "Parent",
+      name: signup.parentName,
+      email: signup.parentEmail,
+      studentName: signup.studentName,
+      studentEmail: signup.studentEmail,
+    };
+    resetPaymentDemo();
+    saveDemoSession(next);
+    setSession(next);
+  }
   function login(next: DemoSession) {
+    setSignup(null);
+    resetPaymentDemo();
     saveDemoSession(next);
     setSession(next);
   }
   function logout() {
+    resetPaymentDemo();
+    setSignup(null);
     saveDemoSession(null);
     setSession(null);
     navigate("/login", { replace: true });
@@ -38,12 +70,37 @@ export default function App() {
           <Route path="events" element={<CommunityPage kind="events" />} />
           <Route path="contact" element={<CommunityPage kind="contact" />} />
           <Route path="programs" element={<ProgramsPage />} />
-          <Route path="register" element={<RegisterPage />} />
-          <Route path="login" element={<LoginPage onLogin={login} />} />
+          <Route
+            path="register"
+            element={<RegisterPage onComplete={beginVerification} />}
+          />
+          <Route
+            path="two-factor"
+            element={
+              <TwoFactorPage
+                receipt={signup}
+                verified={!!session}
+                onVerified={verified}
+                onCancel={logout}
+              />
+            }
+          />
+          <Route
+            path="login"
+            element={
+              needsVerification ? (
+                <Navigate to="/two-factor" replace />
+              ) : (
+                <LoginPage onLogin={login} />
+              )
+            }
+          />
           <Route
             path="dashboard"
             element={
-              session ? (
+              needsVerification ? (
+                <Navigate to="/two-factor" replace />
+              ) : session ? (
                 <Suspense
                   fallback={
                     <div className="container state-panel" role="status">
@@ -55,6 +112,36 @@ export default function App() {
                 </Suspense>
               ) : (
                 <Navigate to="/login" state={{ fromDashboard: true }} replace />
+              )
+            }
+          />
+          <Route
+            path="enrollment-status"
+            element={
+              needsVerification ? (
+                <Navigate to="/two-factor" replace />
+              ) : session ? (
+                <ApprovalPage
+                  key={`${session.role}-${session.email}`}
+                  session={session}
+                />
+              ) : (
+                <Navigate to="/login" state={{ fromPayment: true }} replace />
+              )
+            }
+          />
+          <Route
+            path="payment"
+            element={
+              needsVerification ? (
+                <Navigate to="/two-factor" replace />
+              ) : session ? (
+                <PaymentPage
+                  key={`${session.role}-${session.email}`}
+                  session={session}
+                />
+              ) : (
+                <Navigate to="/login" state={{ fromPayment: true }} replace />
               )
             }
           />

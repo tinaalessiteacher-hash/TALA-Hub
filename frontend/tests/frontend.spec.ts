@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 import type { Locator, Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { completeDemoVerification } from "./signupHelpers";
 
 const runtimeErrors = new WeakMap<Page, string[]>();
 test.beforeEach(async ({ page }) => {
@@ -198,10 +199,7 @@ test("parent-first registration, review, recoverable failure and student login",
   await page
     .getByRole("button", { name: "Complete registration demo" })
     .click();
-  await expect(
-    page.getByRole("heading", { name: "Your family demo is ready." }),
-  ).toBeVisible();
-  expect(await page.evaluate(() => sessionStorage.length)).toBe(0);
+  await completeDemoVerification(page);
   await page
     .getByRole("link", { name: "Continue to student demo login" })
     .click();
@@ -815,6 +813,7 @@ test("funding choices, waiting list and registered parent retain the correct stu
     await page
       .getByRole("button", { name: "Complete registration demo" })
       .click();
+    await completeDemoVerification(page);
     await page.getByRole("link", { name: "Explore as a parent" }).click();
     await expect(page.getByLabel("I am a")).toHaveValue("Parent");
     await page

@@ -2,9 +2,13 @@ import { demoEnabled, demoToolsEnabled } from "../shared/services/demoConfig";
 import { enrollmentSteps } from "./enrollmentService";
 import { useRegistration } from "./useRegistration";
 import { RegistrationFields } from "./RegistrationFields";
-import { RegistrationComplete } from "./RegistrationComplete";
+import type { EnrollmentReceipt } from "./enrollmentService";
 
-export function RegisterPage() {
+export function RegisterPage({
+  onComplete,
+}: {
+  onComplete: (receipt: EnrollmentReceipt) => void;
+}) {
   const {
     draft,
     step,
@@ -13,7 +17,6 @@ export function RegisterPage() {
     failure,
     simulateError,
     showPassword,
-    receipt,
     heading,
     form,
     failureBox,
@@ -23,9 +26,7 @@ export function RegisterPage() {
     goBack,
     setSimulateError,
     setShowPassword,
-  } = useRegistration();
-  if (receipt)
-    return <RegistrationComplete receipt={receipt} heading={heading} />;
+  } = useRegistration(onComplete);
   return (
     <section className="container enrollment-page">
       <header>

@@ -9,6 +9,9 @@ const titles: Record<string, string> = {
   "/programs": "Ways to learn",
   "/login": "Log in",
   "/register": "Start your journey",
+  "/enrollment-status": "Enrollment status",
+  "/payment": "Payment",
+  "/two-factor": "Two-factor authentication",
   "/dashboard": "Student hub",
 };
 export function RouteFocus() {

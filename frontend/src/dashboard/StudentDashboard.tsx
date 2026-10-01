@@ -92,6 +92,9 @@ export function StudentDashboard({
             </p>
           </div>
         )}
+        <p>
+          <Link to="/enrollment-status">Enrollment status &amp; payment</Link>
+        </p>
         <div className="integration-notice">
           <Icon name="book" />
           <div>

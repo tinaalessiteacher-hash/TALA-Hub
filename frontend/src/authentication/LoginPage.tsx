@@ -22,6 +22,7 @@ export function LoginPage({
   const state = location.state as {
     registered?: { name: string; email: string };
     fromDashboard?: boolean;
+    fromPayment?: boolean;
     family?: EnrollmentReceipt;
     role?: CommunityRole;
   } | null;
@@ -48,7 +49,9 @@ export function LoginPage({
       representing:
         role === "Parent" && parentView === "student" ? studentName : undefined,
     });
-    navigate("/dashboard", { replace: true });
+    navigate(state?.fromPayment ? "/enrollment-status" : "/dashboard", {
+      replace: true,
+    });
   }
   return (
     <section className="auth-layout container">
@@ -58,6 +61,11 @@ export function LoginPage({
         <p>
           New to TALA? <Link to="/register">Create a demo profile</Link>
         </p>
+        {state?.fromPayment && (
+          <p className="notice" role="status">
+            Sign in to check approval before opening the payment demo.
+          </p>
+        )}
         {state?.fromDashboard && (
           <div className="notice" role="status">
             Open a demo session to explore the student dashboard.
